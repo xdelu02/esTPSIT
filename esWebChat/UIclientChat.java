@@ -3,6 +3,8 @@ import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 class UIclientChat extends JFrame
@@ -16,6 +18,7 @@ class UIclientChat extends JFrame
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Client client = new Client();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -31,7 +34,7 @@ class UIclientChat extends JFrame
 		inputpanel.setLayout(new FlowLayout());
 		JTextField input = new JTextField(20);
 		JButton button = new JButton("Invia");
-		Listener listener = new Listener(input, textArea, username);
+		Listener listener = new Listener(input, textArea, username, client);
 		button.addActionListener(listener);
 		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -45,6 +48,15 @@ class UIclientChat extends JFrame
 		frame.setVisible(true);
 		frame.setResizable(false);
 		input.requestFocus();
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent event) {
+				client.sendMessage("@@@CHIUDI***");
+				frame.dispose();
+				System.exit(0);
+			}
+		});
 	}
 }
 
@@ -68,10 +80,10 @@ class Listener implements ActionListener {
 		}
 	});
 
-	public Listener(JTextField input, JTextArea textArea, String username) {
+	public Listener(JTextField input, JTextArea textArea, String username, Client client) {
 		this.input = input;
 		this.textArea = textArea;
-		this.client = new Client();
+		this.client = client;
 		this.username = username;
 		readMessage.start();
 		client.sendMessage(username); //invio dello username al Client e poi al Client handler
@@ -80,7 +92,6 @@ class Listener implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		String msg = input.getText();
 		input.setText("");
-		textArea.append("Tu : " + msg + '\n');
 		client.sendMessage(msg);
 	}
 }

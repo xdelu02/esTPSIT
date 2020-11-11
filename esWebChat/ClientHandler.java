@@ -4,39 +4,45 @@ import java.io.IOException;
 import java.net.Socket;
 
 class ClientHandler implements Runnable {
-	final DataInputStream dis;
-	final DataOutputStream dos;
+	private DataInputStream input;
+	private DataOutputStream output;
+	private ServerListener server;
 	private final int posClient;
-	Socket s;
+	private Socket socket;
 	boolean isloggedin;
-	private String name;
-	private int posClientDestinatario;
+	private String username;
 
-	// constructor
-	public ClientHandler(Socket s, int pos, DataInputStream dis, DataOutputStream dos) {
-		this.dis = dis;
-		this.dos = dos;
+	// get
+	public ClientHandler(Socket socket, int pos, ServerListener server) {
+		this.server = server;
 		posClient = pos;
-		this.s = s;
+		this.socket = socket;
 		this.isloggedin = true;
-		setPosClientDestinatario();
 	}
 
-	private void setPosClientDestinatario() {
-		if (posClient == 0) posClientDestinatario++;
+	public DataInputStream getInput() {
+		return input;
 	}
 
-	public String getName() {
-		return name;
+	public DataOutputStream getOutput() {
+		return output;
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	@Override
 	public void run() {
 		String received;
-
 		try {
-			name = dis.readUTF();
-			UIclientList.addClientToList(name);
+			input = new DataInputStream(socket.getInputStream());
+			output = new DataOutputStream(socket.getOutputStream());
+			username = input.readUTF();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -44,18 +50,15 @@ class ClientHandler implements Runnable {
 		while (true) {
 			try {
 				// receive the string
-				received = dis.readUTF();
+				received = input.readUTF();
+				if (received.equals("@@@CHIUDI***")) {
+					server.closeConnection(this);
+				}
+				server.sendToAll(this.username + " : " + received);
 
-				try {
-					ServerListener.ar.get(posClientDestinatario).dos.writeUTF(this.name + " : " + received);
-				}
-				catch (Exception e){
-					ServerListener.ar.get(posClient).dos.writeUTF("@@@NONONLINE###");
-				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 }

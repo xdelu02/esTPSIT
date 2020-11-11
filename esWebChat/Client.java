@@ -8,15 +8,15 @@ public class Client {
 	final static int ServerPort = 60000;
 	private DataInputStream dis;
 	private DataOutputStream dos;
-	private Socket s;
+	private Socket socket;
 	private InetAddress ip;
 
 	public Client() {
 		try {
 			ip = InetAddress.getByName("localhost");
-			s = new Socket(ip, ServerPort);
-			dis = new DataInputStream(s.getInputStream());
-			dos = new DataOutputStream(s.getOutputStream());
+			socket = new Socket(ip, ServerPort);
+			dis = new DataInputStream(socket.getInputStream());
+			dos = new DataOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -38,5 +38,15 @@ public class Client {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void closeConnection() {
+		try {
+			dos.close();
+			dis.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
