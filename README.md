@@ -22,5 +22,5 @@ Se il Server è attivo, il client inserisce il nome utente e se non è già stat
 **Diagramma delle classi:**
 https://lucid.app/documents/view/402e5944-76af-4bbe-88dd-722c498f8845
 
-**Casi d'uso**
+**Casi d'uso:**
 https://lucid.app/invitations/accept/a81cf188-9700-4e45-b182-cf1e65850dd1
