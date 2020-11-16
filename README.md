@@ -4,13 +4,16 @@
 
 Creare una chat che permetta la comunicazione tra più utenti e l’invio di messaggio a tutti gli utenti connessi e a utenti singoli.
 
-**Risoluzione del problema**
+**Risoluzione del problema:**
 
 
-**Funzionamento**
+
+**Funzionamento:**
+
 Se il Server è attivo, il client inserisce il nome utente e se non è già stato preso, può comunicare con gli altri.
 
-**Messaggi scambiati**<br/>
+**Messaggi scambiati:**
+
 @ls@ -> il client richiede al server la lista degli utenti connessi <br/>
 @close@ -> il client dichiara al server l'intenzione di chiudere la connessione e quindi il socket <br/>
 "messaggio" -> il client quando invia un messaggio senza # dichiara al server di voler inviare un messaggio a tutti <br/>
